@@ -3,18 +3,18 @@ using MvcMovie.Models;
 using System.Text.Encodings.Web;
 namespace MvcMovie.Controllers
 {
-    public class PersonController : Controller
+    public class bth212b3Controller: Controller
     {
-        
         public IActionResult Index()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Index(Person ps)
+        public IActionResult Index(bth212b3 ps)
         {
-           string strOutput="xin chao"+ps.PersonId+" "+ps.FullName+""+ps.Address;
-           ViewBag.infoPerson=strOutput;
+          ps.C=ps.A*ps.B;
+          string strOutput = "Don gia " + ps.C+ " VND";
+          ViewBag.Z = strOutput;
             return View();
         }
      

@@ -1,0 +1,12 @@
+<h1>Chỉ số BMI</h1>
+<form asp-action="Index">
+    <label>Nhap can nang :</label>
+    <input type="text" name="Weight" />
+    <label>Nhap chieu cao :</label>
+    <input type="text" name="Height" />
+    <input type="submit" value="Xac nhan" />
+</form>
+@if (ViewBag.BMI != null)
+{
+    <h2>Chi so BMI cua ban la: @ViewBag.BMI</h2>
+}

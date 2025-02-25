@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-namespace MvcMovie.Models
-{
+namespace MvcMovie.Models;
+
     public class Movie
     {
         public int ID { get; set; }
@@ -10,4 +10,4 @@ namespace MvcMovie.Models
         public string Genre { get; set; }
         public decimal Price { get; set; }
     }
-}   
+   
