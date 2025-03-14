@@ -1,0 +1,41 @@
+@using MvcMovie.Models
+@model IEnumerable<Person>
+
+@{
+    ViewData["Title"] = "Danh sách Person";
+}
+
+<h1>Danh sách Person</h1>
+
+<p>
+    <a asp-action="Create">Tạo mới</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.PersonId)</th>
+            <th>@Html.DisplayNameFor(model => model.FullName)</th>
+            <th>@Html.DisplayNameFor(model => model.Address)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+           
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.PersonId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FullName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+          
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PersonId">Sửa</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PersonId">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
