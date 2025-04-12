@@ -10,8 +10,8 @@ using MvcMovie.Data;
 namespace MvcMovie.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250314110535_Update_Table_HeThongPhanPhoi")]
-    partial class Update_Table_HeThongPhanPhoi
+    [Migration("20250412190235_Ver1")]
+    partial class Create_table_Person
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
