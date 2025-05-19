@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "uySv/wJa17M=",
+  "dgSpecHash": "oYu++qSKlpY=",
   "success": true,
   "projectFilePath": "L:\\CODE\\PTPMQL\\MvcMovie\\MvcMovie.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\luong\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\luong\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
+    "C:\\Users\\luong\\.nuget\\packages\\bogus\\35.6.3\\bogus.35.6.3.nupkg.sha512",
     "C:\\Users\\luong\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\luong\\.nuget\\packages\\epplus\\5.8.3\\epplus.5.8.3.nupkg.sha512",
     "C:\\Users\\luong\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

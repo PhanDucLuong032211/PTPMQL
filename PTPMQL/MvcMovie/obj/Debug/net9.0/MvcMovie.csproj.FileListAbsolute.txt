@@ -444,3 +444,4 @@ L:\CODE\PTPMQL\MvcMovie\obj\Debug\net9.0\ref\MvcMovie.dll
 L:\CODE\PTPMQL\MvcMovie\bin\Debug\net9.0\BouncyCastle.Cryptography.dll
 L:\CODE\PTPMQL\MvcMovie\bin\Debug\net9.0\MailKit.dll
 L:\CODE\PTPMQL\MvcMovie\bin\Debug\net9.0\MimeKit.dll
+L:\CODE\PTPMQL\MvcMovie\bin\Debug\net9.0\Bogus.dll

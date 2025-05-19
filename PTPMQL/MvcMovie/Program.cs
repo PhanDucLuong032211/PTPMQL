@@ -5,6 +5,7 @@ using MvcMovie.Models;
 using MvcMovie.Models.Process;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
+using VicemMVCIdentity.Models.Process;
 var builder = WebApplication.CreateBuilder(args);
  builder.Services.AddOptions();
         var mailSettings = builder.Configuration.GetSection("MailSettings");
@@ -16,9 +17,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddTransient<EmployeeSeeder>();
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+   var seeder = services.GetRequiredService<EmployeeSeeder>();
+   seeder.SeedEmployees(1000);
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
