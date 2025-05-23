@@ -23,12 +23,14 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Employeee
-        [AllowAnonymous]
+        [Authorize(Roles = "Employeee")] 
         public async Task<IActionResult> Index()
+        
         {
+         
             return View(await _context.Employeee.ToListAsync());
         }
-
+        [Authorize(Roles = "Employeee")]    
         // GET: Employeee/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -46,6 +48,7 @@ namespace MvcMovie.Controllers
 
             return View(employeee);
         }
+        [Authorize(Roles = "Admin")] 
 
         // GET: Employeee/Create
         public IActionResult Create()
@@ -68,7 +71,7 @@ namespace MvcMovie.Controllers
             }
             return View(employeee);
         }
-
+    [Authorize(Roles = "Admin")]    
         // GET: Employeee/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
