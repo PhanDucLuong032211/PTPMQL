@@ -1,8 +1,11 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Models;
 using MvcMovie.Models.Entities;
+using MvcMovie.Models.Process;
+using MvcMovie.Models.ViewModels;
 namespace MvcMovie.Controllers
 {
     public class RoleController : Controller
@@ -57,15 +60,76 @@ public async Task<IActionResult> Edit(string id)
             await _roleManager.UpdateAsync(role);
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role != null)
+            {
+                await _roleManager.DeleteAsync(role);
+            }
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> AssignClaim(string id)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
+            if (role == null)
+            {
+                return BadRequest();
+            }
+
+            var allPermissions = Enum.GetValues(typeof(SystemPermissions))
+                                    .Cast<SystemPermissions>()
+                                    .Select(p => p.ToString())
+                                    .ToList();
+
+            var roleClaims = await _roleManager.GetClaimsAsync(role) ?? new List<Claim>();
+
+            var model = new RoleClaimVM
+            {
+                RoleId = role.Id,
+                RoleName = role.Name,
+                Claims = allPermissions.Select(p => new RoleClaim
+                {
+                    Type = "Permission",
+                    Value = p,
+                    Selected = roleClaims.Any(c => c.Type == "Permission" && c.Value == p)
+                }).ToList()
+            };
+
+            return View(model);
+        }
 [HttpPost]
-public async Task<IActionResult> Delete(string id)
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> AssignClaim(RoleClaimVM model)
 {
-    var role = await _roleManager.FindByIdAsync(id);
-    if (role != null)
+    if (!ModelState.IsValid)
     {
-        await _roleManager.DeleteAsync(role);
+        return View(model);
     }
-    return RedirectToAction("Index");
+
+    var role = await _roleManager.FindByIdAsync(model.RoleId);
+    if (role == null)
+    {
+        return BadRequest();
+    }
+
+    // Get existing claims or initialize empty list
+    var claims = await _roleManager.GetClaimsAsync(role) ?? new List<Claim>();
+
+    // Remove all existing permission claims
+    foreach (var claim in claims.Where(c => c.Type == "Permission"))
+    {
+        await _roleManager.RemoveClaimAsync(role, claim);
+    }
+
+    // Add newly selected claims
+    foreach (var claim in model.Claims.Where(c => c.Selected))
+    {
+        await _roleManager.AddClaimAsync(role, new Claim(claim.Type, claim.Value));
+    }
+
+    return RedirectToAction(nameof(Index));
 }
     }
 }

@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Models;
 using MvcMovie.Models.Entities;
+using MvcMovie.Models.Process;
 using MvcMovie.Models.ViewModels;
+using System.Security.Claims;
 namespace MvcMovie.Controllers
 {
     public class AccountController : Controller
@@ -16,7 +19,7 @@ namespace MvcMovie.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
+ [Authorize(Policy = nameof(SystemPermissions.AccountView))]
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -34,6 +37,7 @@ namespace MvcMovie.Controllers
 
             return View(usersWithRoles);
         }
+        [Authorize(Policy = nameof(SystemPermissions.AssignRole))]
         public async Task<IActionResult> AssignRole(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -56,40 +60,61 @@ namespace MvcMovie.Controllers
 
             return View(viewModel);
         }
-[HttpPost]
-public async Task<IActionResult> AssignRole(AssignRoleVM model)
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(AssignRoleVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByIdAsync(model.UserId);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                // Add new roles
+                foreach (var role in model.SelectedRoles)
+                {
+                    if (!userRoles.Contains(role))
+                    {
+                        await _userManager.AddToRoleAsync(user, role);
+                    }
+                }
+
+                // Remove unselected roles
+                foreach (var role in userRoles)
+                {
+                    if (!model.SelectedRoles.Contains(role))
+                    {
+                        await _userManager.RemoveFromRoleAsync(user, role);
+                    }
+                }
+
+                return RedirectToAction("Index", "Account");
+            }
+            return View(model);
+        }
+public async Task<IActionResult> AddClaim(string userId)
 {
-    if (ModelState.IsValid)
-    {
-        var user = await _userManager.FindByIdAsync(model.UserId);
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        var userRoles = await _userManager.GetRolesAsync(user);
-        
-        // Add new roles
-        foreach (var role in model.SelectedRoles)
-        {
-            if (!userRoles.Contains(role))
-            {
-                await _userManager.AddToRoleAsync(user, role);
-            }
-        }
-
-        // Remove unselected roles
-        foreach (var role in userRoles)
-        {
-            if (!model.SelectedRoles.Contains(role))
-            {
-                await _userManager.RemoveFromRoleAsync(user, role);
-            }
-        }
-
-        return RedirectToAction("Index", "Account");
-    }
+    var user = await _userManager.FindByIdAsync(userId);
+    var userClaims = await _userManager.GetClaimsAsync(user);
+    var model = new UserClaimVM(userId, user.UserName, userClaims.ToList());
     return View(model);
+}
+
+[HttpPost]
+public async Task<IActionResult> AddClaim(string userId, string claimType, string claimValue)
+{
+    var user = await _userManager.FindByIdAsync(userId);
+    var result = await _userManager.AddClaimAsync(user, new Claim(claimType, claimValue));
+    
+    if (result.Succeeded)
+    {
+        return RedirectToAction("AddClaim", new { userId });
+    }
+    
+    return View();
 }
     }
 }

@@ -17,6 +17,19 @@ builder.Services.AddRazorPages();
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthorization(options =>
+{
+    foreach (var permission in Enum.GetValues(typeof(SystemPermissions)).Cast<SystemPermissions>())
+    {
+        options.AddPolicy(permission.ToString(), policy =>
+            policy.RequireClaim("Permission", permission.ToString()));
+        /*options.AddPolicy("Role", policy => policy.RequireClaim("Role", "AdminOnly"));
+        options.AddPolicy("Permission", policy => policy.RequireClaim("Permission", "EmployeeecOnly"));
+        options.AddPolicy("PolicyAdmin", policy => policy.RequireRole("Admin"));
+        options.AddPolicy("PolicyEmployee", policy => policy.RequireRole("Employee"));*/
+    }
+});
+
 builder.Services.AddTransient<EmployeeSeeder>();
 builder.Services.ConfigureApplicationCookie(options =>
 {

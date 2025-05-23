@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Data;
 using MvcMovie.Models.Entities;
-
+using Microsoft.AspNetCore.Authorization;
+using MvcMovie.Models.ViewModels;
+using System.Security.Claims;
 namespace MvcMovie.Controllers
 {
+    [Authorize(Policy = "Role")]
     public class MemberUnitController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -44,6 +47,7 @@ namespace MvcMovie.Controllers
         }
 
         // GET: MemberUnit/Create
+        [Authorize(Policy = "Role")]
         public IActionResult Create()
         {
             return View();
